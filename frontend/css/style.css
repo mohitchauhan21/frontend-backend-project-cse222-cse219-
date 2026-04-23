@@ -1,0 +1,40 @@
+body { 
+    font-family: 'Inter', sans-serif; 
+    -webkit-font-smoothing: antialiased;
+}
+.font-display { font-family: 'Outfit', sans-serif; }
+
+/* Large touch targets for elderly users */
+button, input, select {
+    min-height: 48px;
+}
+
+/* Custom scrollbar for a cleaner look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}
+
+/* Animations for high-fidelity feel */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#dashboard-content > * {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Dashboard status colors */
+.status-taken { @apply bg-emerald-100 text-emerald-600; }
+.status-skipped { @apply bg-rose-100 text-rose-600; }
+.status-upcoming { @apply bg-sky-100 text-sky-600; }

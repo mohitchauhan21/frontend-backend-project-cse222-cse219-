@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Medicine Reminder</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="dashboard.html" class="brand">MedRemind</a>
+        <div class="links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="medicines.html">My Medicines</a>
+            <a href="history.html">History</a>
+            <a href="profile.html">Profile</a>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </nav>
+    <div class="container" style="max-width: 600px;">
+        <h1>Your Profile</h1>
+        <div class="card" id="profile-card">
+            <p>Loading profile...</p>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const card = document.getElementById('profile-card');
+            try {
+                const user = await apiFetch('/auth/me');
+                if (user.name) {
+                    card.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <p><strong>Name:</strong> ${user.name}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>Age:</strong> ${user.age}</p>
+                            <p><strong>Primary Doctor:</strong> ${user.doctorName}</p>
+                            <p><strong>Joined:</strong> ${new Date(user.date).toLocaleDateString()}</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                card.innerHTML = '<p>Error loading profile.</p>';
+            }
+        });
+    </script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
