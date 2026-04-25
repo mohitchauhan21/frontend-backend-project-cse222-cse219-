@@ -16,14 +16,16 @@ const renderSidebar = () => {
             { href: '/dashboard.html', label: 'Dashboard', icon: 'layout-dashboard', id: 'dashboard' }
         ];
 
-        if (role === 'doctor' || role === 'patient') {
+        if (role === 'doctor' || role === 'patient' || role === 'admin') {
             links.push({ href: '/medicines.html', label: 'Medication', icon: 'pill', id: 'medicines' });
         }
 
         if (role !== 'doctor') {
             links.push({ href: '/history.html', label: 'History', icon: 'activity', id: 'history' });
         }
-        links.push({ href: '/profile.html', label: 'My Profile', icon: 'user', id: 'profile' });
+        if (role === 'admin') {
+            links.push({ href: '/admin.html', label: 'Admin Panel', icon: 'settings', id: 'admin' });
+        }
 
         return links;
     };
@@ -84,6 +86,8 @@ const renderSidebar = () => {
         ? 'Clinical Control Center'
         : user.role === 'caregiver'
         ? 'Caregiver Hub'
+        : user.role === 'admin'
+        ? 'Administrator Hub'
         : 'Personal Health Dashboard';
 
     const showGreeting = isPage('dashboard');

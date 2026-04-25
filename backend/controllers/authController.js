@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Generate JWT
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id, role) => {
+    return jwt.sign({ id, role }, process.env.JWT_SECRET, {
         expiresIn: '30d',
     });
 };
@@ -26,7 +26,7 @@ exports.registerUser = async (req, res) => {
         }
 
         // Validate role
-        const validRoles = ['patient', 'caregiver', 'doctor'];
+        const validRoles = ['patient', 'caregiver', 'doctor', 'admin'];
         const userRole = role && validRoles.includes(role) ? role : 'patient';
 
         user = new User({
@@ -44,7 +44,7 @@ exports.registerUser = async (req, res) => {
         await user.save();
 
         res.status(201).json({
-            token: generateToken(user._id),
+            token: generateToken(user._id, user.role),
             user: {
                 id: user._id,
                 name: user.name,
@@ -82,7 +82,7 @@ exports.loginUser = async (req, res) => {
         }
 
         res.json({
-            token: generateToken(foundUser._id),
+            token: generateToken(foundUser._id, foundUser.role),
             user: {
                 id: foundUser._id,
                 name: foundUser.name,

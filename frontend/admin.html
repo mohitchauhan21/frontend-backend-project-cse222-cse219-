@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - MedRemind</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Varela+Round&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: '#58cc02', 'primary-dark': '#46a302', secondary: '#1cb0f6', danger: '#ff4b4b', warning: '#ffc800' },
+                    fontFamily: { display: ['Varela Round', 'sans-serif'], sans: ['Nunito', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 font-sans">
+    <div class="max-w-6xl mx-auto p-4 md:p-8 animate-slide-up">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl font-display font-black text-slate-800 dark:text-white mb-2">Doctor Management</h1>
+                <p class="text-slate-500 dark:text-slate-400 font-medium italic">Create, update, and manage clinical staff</p>
+            </div>
+            <button id="add-doctor-btn" class="flex items-center justify-center gap-3 px-8 py-4 bg-primary dark:bg-sky-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all border-b-4 border-primary-dark dark:border-sky-700 active:border-b-0 active:translate-y-1">
+                <i data-lucide="plus-circle" class="w-6 h-6"></i>
+                Add New Doctor
+            </button>
+        </div>
+
+        <!-- Doctor List Grid -->
+        <div id="doctor-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Loading State -->
+            <div class="col-span-full flex items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Doctor Modal -->
+    <div id="doctor-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl border-2 border-transparent dark:border-slate-700 animate-bounce-in">
+            <div class="flex items-center justify-between mb-8">
+                <h2 id="modal-title" class="text-2xl font-display font-black text-slate-800 dark:text-white">Add Doctor</h2>
+                <button id="close-modal" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 text-slate-400"></i>
+                </button>
+            </div>
+
+            <form id="doctor-form" class="space-y-6">
+                <input type="hidden" id="doctor-id">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase ml-1">Full Name</label>
+                    <input type="text" id="doc-name" placeholder="Dr. John Smith" required 
+                        class="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-2 border-transparent dark:border-slate-700 rounded-2xl focus:border-primary dark:focus:border-sky-600 outline-none transition-all">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase ml-1">Email Address</label>
+                    <input type="email" id="doc-email" placeholder="john@hospital.com" required 
+                        class="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-2 border-transparent dark:border-slate-700 rounded-2xl focus:border-primary dark:focus:border-sky-600 outline-none transition-all">
+                </div>
+                <div id="password-field" class="space-y-1">
+                    <label class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase ml-1">Password</label>
+                    <input type="password" id="doc-password" placeholder="••••••••" required 
+                        class="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-2 border-transparent dark:border-slate-700 rounded-2xl focus:border-primary dark:focus:border-sky-600 outline-none transition-all">
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-5 bg-primary dark:bg-sky-600 text-white font-black rounded-2xl shadow-lg border-b-4 border-primary-dark dark:border-sky-700 hover:shadow-xl transition-all active:border-b-0 active:translate-y-1 mt-4">
+                    Save Doctor Profile
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Doctor Details Modal -->
+    <div id="details-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl p-8 rounded-[2.5rem] shadow-2xl border-2 border-transparent dark:border-slate-700 animate-bounce-in max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-display font-black text-slate-800 dark:text-white">Doctor Record</h2>
+                <button id="close-details" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 text-slate-400"></i>
+                </button>
+            </div>
+
+            <div id="doctor-details-content" class="space-y-8">
+                <!-- Content injected by admin.js -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

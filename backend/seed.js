@@ -47,6 +47,14 @@ const seed = async () => {
             role: 'doctor'
         });
 
+        // 4. Create Admin
+        const admin = await User.create({
+            name: 'System Administrator',
+            email: 'admin@example.com',
+            password: hashedPassword,
+            role: 'admin'
+        });
+
         // 4. Create Sample Medicines for Patient
         const med1 = await Medicine.create({
             user: patient._id,
@@ -93,6 +101,7 @@ const seed = async () => {
         console.log('Patient: patient@example.com / password123');
         console.log('Caregiver: caregiver@example.com / password123');
         console.log('Doctor: doctor@example.com / password123');
+        console.log('Admin: admin@example.com / password123');
         
         process.exit();
     } catch (err) {
