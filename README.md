@@ -9,6 +9,7 @@ MedRemind is a production-ready healthcare management system designed for patien
 - **Patient Interface**: Minimalist and action-oriented. Focuses on "What do I take now?" with one-tap logging, real-time medication alerts, and snooze support.
 - **Caregiver Interface**: Monitoring-oriented. Provides live status updates, missed-dose alerts, and historical adherence analytics for linked patients.
 - **Doctor Interface**: Data-oriented. High-level clinical oversight, patient directory management, risk scoring, and remote prescription capabilities.
+- **Admin Interface**: Governance-oriented. Provides a "Super Patient" experience alongside a clinical control tower to manage doctors and oversee their patient loads.
 
 ---
 
@@ -24,6 +25,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
   - `logController.js` — Medication intake logging (taken/skipped) + adherence stats
   - `vitalsController.js` — Heart rate & blood pressure logging per patient
   - `userController.js` — Profile updates, patient linking, role-based user queries
+  - `adminController.js` — CRUD operations for managing doctors and viewing their clinical stats
 - `routes/` — Lightweight routing definitions pointing to controllers
 - `config/db.js` — MongoDB connection management
 - `middleware/auth.js` — JWT verification + role-based route protection
@@ -36,11 +38,13 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 - `dashboard.html` — Main dashboard (role-aware: patient / doctor / caregiver)
 - `medicines.html` — Medication management (add, edit, delete, filter)
 - `history.html` — Adherence history with CSV export
+- `admin.html` — System administration and doctor management
 - `profile.html` — User profile & account settings
 - `js/api.js` — Central `apiFetch()` wrapper (auto-switches between local/production API URLs)
 - `js/auth.js` — Login/register logic + JWT storage
 - `js/layout.js` — Shared sidebar, header, and navigation engine (injected on all pages)
 - `js/dashboard.js` — Role-specific dashboard views (patient, doctor, caregiver)
+- `js/admin.js` — Admin panel logic (doctor CRUD, clinical records view)
 - `js/medicines.js` — Medicine form handling (CRUD, day picker, frequency logic)
 - `js/scheduler.js` — Real-time medication alert system with snooze
 - `js/history.js` — Adherence log rendering + CSV export
@@ -56,7 +60,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 | `name` | String | Full user name |
 | `email` | String | Unique login identifier |
 | `password` | String | Hashed with BcryptJS (salt: 10) |
-| `role` | Enum | `patient`, `caregiver`, `doctor` |
+| `role` | Enum | `patient`, `caregiver`, `doctor`, `admin` |
 | `age` | Number | Patient specific |
 | `doctorName` | String | Patient specific |
 | `caregiverId` | ObjectId | Reference to a Caregiver (for Patients) |
@@ -106,6 +110,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 - **Patient Dashboard** — Greeting, live next-dose countdown timer, today's medication schedule, upcoming dose hero card, weekly adherence chart, AI-style insights, daily progress bar
 - **Doctor Dashboard** — Clinical Control Center with patient directory, adherence % per patient, risk level scoring (Low/Medium/High), critical care alerts, "New Prescription" modal
 - **Caregiver Dashboard** — Family Health Alerts, linked patient cards with adherence bars, missed dose indicators, link/unlink patients
+- **Admin Dashboard** — Functions as a "Super Patient" with full access to personal health tracking (Medications, History), plus an exclusive Admin Panel for system governance.
 
 ### 💊 Medication Management
 - **Full CRUD** — Add, edit, delete medications; doctors can prescribe to any patient
@@ -155,6 +160,11 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 - **Family Health Alerts** — Live panel showing which patients missed doses or have low adherence
 - **Patient Cards** — Adherence bar, last activity time, missed-dose warning badge, call/email shortcuts
 
+### 🛡️ Admin Features
+- **Doctor Management (CRUD)** — Add, edit, and remove clinical staff securely.
+- **Clinical Records Oversight** — Click into any doctor's profile to view their total managed patients and a detailed patient directory.
+- **Dual-Role Capabilities** — Admins have full access to patient features, allowing them to manage their own health metrics while governing the system.
+
 ### 🎨 UI / UX
 - **Shared Sidebar** — Rendered by `layout.js` on all pages; includes the MedRemind logo, role-specific nav links, and a Logout button
 - **Clickable Logo** — The MedRemind logo/icon in the top left navigates to the Dashboard on all pages
@@ -180,7 +190,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 
 ## 🔐 Security Implementation
 
-1. **RBAC** — Patients only access their own data; caregivers only access linked patients; doctors have read access to all patients
+1. **RBAC** — Patients only access their own data; caregivers only access linked patients; doctors have read access to all patients; admins govern the clinical staff.
 2. **JWT** — Issued on login, expiry enforced, stored in `localStorage`
 3. **Password Hashing** — bcryptjs, never stored in plaintext
 4. **API Input Validation** — Server-side checks for required fields, role validity, and ownership before any write operation
@@ -214,6 +224,7 @@ This creates sample accounts:
 | Patient | patient@example.com | password123 |
 | Caregiver | caregiver@example.com | password123 |
 | Doctor | doctor@example.com | password123 |
+| Admin | admin@example.com | password123 |
 
 ### 3. Start Backend
 ```bash
