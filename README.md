@@ -102,6 +102,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 ### 🔐 Authentication & Security
 - **JWT Authentication** — Tokens issued on login, required on all protected API routes via `Authorization: Bearer <token>`
 - **Role-Based Access Control (RBAC)** — Patient, Caregiver, Doctor roles with strict data isolation
+- **Role Enforcement** — Login system verifies the selected "Login As" role against the database, preventing cross-role account access (e.g., a patient cannot log in using the Doctor role).
 - **Password Hashing** — bcryptjs with salt factor 10; plaintext passwords never stored
 - **Auto Logout** — 401 responses automatically clear session and redirect to login
 - **Input Validation** — Server-side required field checks and role validation on all endpoints
@@ -124,6 +125,8 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 ### ⏰ Real-Time Medication Alerts (Scheduler)
 - **Auto-polling** — Checks every 30 seconds for medicines due at the current time
 - **Modal Alert** — Elegant in-app popup with medicine name, time, dosage, and frequency
+- **Thunderbolt (Zap) Alerts** — Caregivers and Doctors can trigger manual "Thunderbolt" alerts from their dashboard to send instant medication reminders to patients.
+- **Patient Banner Notifications** — Triggered alerts appear as high-visibility, dismissible banners at the top of the patient's dashboard.
 - **✅ Taken Button** — Logs the dose via API and shows a success toast; removes the modal
 - **💤 Snooze Button** — Dismisses the alert and re-fires it exactly **10 minutes later**
 - **Snooze Toast** — Confirms "Snoozed! Reminder in 10 minutes." with a countdown feel
@@ -153,6 +156,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 - **Critical Alerts** — Flags patients with adherence <60%, 3+ missed doses in 3 days, or 2+ days inactive
 - **Patient Clinical File** — Modal with avg adherence, heart rate, blood pressure, active prescriptions, recent logs
 - **New Prescription & Doctor Notes** — Doctor can prescribe medicines directly to any patient from a modal and attach private-write/public-read clinical notes
+- **Set Patient Diagnosis** — Doctors can officially update a patient's diagnosis record while prescribing medication, which reflects immediately on the patient's profile.
 - **Adjust Prescription** — Accessible from the patient file modal
 
 ### 👨‍👩‍👧 Caregiver Features
@@ -162,6 +166,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 
 ### 🛡️ Admin Features
 - **Doctor Management (CRUD)** — Add, edit, and remove clinical staff securely.
+- **Restricted Registration** — Admin accounts cannot be created via the public registration form to maintain system security.
 - **Clinical Records Oversight** — Click into any doctor's profile to view their total managed patients and a detailed patient directory.
 - **Dual-Role Capabilities** — Admins have full access to patient features, allowing them to manage their own health metrics while governing the system.
 
