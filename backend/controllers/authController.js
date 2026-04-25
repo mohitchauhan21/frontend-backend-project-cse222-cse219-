@@ -82,7 +82,14 @@ exports.loginUser = async (req, res) => {
         }
 
         res.json({
+            _id: foundUser._id,
+            name: foundUser.name,
+            email: foundUser.email,
+            role: foundUser.role,
+            age: foundUser.age,
+            doctorName: foundUser.doctorName,
             token: generateToken(foundUser._id, foundUser.role),
+            // backward compatibility for existing code expecting res.user
             user: {
                 id: foundUser._id,
                 name: foundUser.name,

@@ -1,6 +1,15 @@
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 
+function redirectUser(role) {
+    if (role === 'admin') {
+        window.location.href = '/admin.html';
+    } else {
+        // Patient, doctor, and caregiver all use the unified dashboard
+        window.location.href = '/dashboard.html';
+    }
+}
+
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -18,8 +27,17 @@ if (loginForm) {
 
             if (res && res.token) {
                 localStorage.setItem('token', res.token);
-                localStorage.setItem('user', JSON.stringify(res.user));
-                window.location.href = '/dashboard.html';
+                // Backward compatibility + root level assignment
+                const userObj = res.user ? res.user : {
+                    id: res._id || res.id,
+                    name: res.name,
+                    email: res.email,
+                    role: res.role,
+                    age: res.age,
+                    doctorName: res.doctorName
+                };
+                localStorage.setItem('user', JSON.stringify(userObj));
+                redirectUser(userObj.role);
             } else {
                 alert(res?.msg || 'Login failed');
             }
@@ -54,8 +72,17 @@ if (registerForm) {
 
             if (res && res.token) {
                 localStorage.setItem('token', res.token);
-                localStorage.setItem('user', JSON.stringify(res.user));
-                window.location.href = '/dashboard.html';
+                // Backward compatibility + root level assignment
+                const userObj = res.user ? res.user : {
+                    id: res._id || res.id,
+                    name: res.name,
+                    email: res.email,
+                    role: res.role,
+                    age: res.age,
+                    doctorName: res.doctorName
+                };
+                localStorage.setItem('user', JSON.stringify(userObj));
+                redirectUser(userObj.role);
             } else {
                 alert(res?.msg || 'Registration failed');
             }
