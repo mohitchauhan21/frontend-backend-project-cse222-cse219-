@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - MedRemind</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { primary: '#0ea5e9' },
-                    fontFamily: { display: ['Outfit', 'sans-serif'] }
+                    colors: { primary: '#58cc02', 'primary-dark': '#46a302', secondary: '#1cb0f6', danger: '#ff4b4b', warning: '#ffc800' },
+                    fontFamily: { display: ['Varela Round', 'sans-serif'], sans: ['Nunito', 'sans-serif'] }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center min-h-screen p-4 font-['Inter']">
+<body class="bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center min-h-screen p-4 font-sans">
     <div class="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-sm border border-transparent dark:border-slate-700 dark:shadow-none border border-transparent dark:border-slate-700">
         <div class="text-center mb-10">
             <h1 class="text-4xl font-display font-bold text-primary mb-2">MedRemind</h1>

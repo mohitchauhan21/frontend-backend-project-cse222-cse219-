@@ -63,8 +63,8 @@ async function renderPatientContainer(container) {
             <div class="col-span-12 lg:col-span-8 space-y-8">
                 <section>
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-2xl font-display font-bold text-slate-800 dark:text-slate-100">Today's Schedule</h3>
-                        <div id="schedule-meta" class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest"></div>
+                        <h3 class="text-3xl font-display font-black text-slate-700 dark:text-slate-200">Daily Quests</h3>
+                        <div id="schedule-meta" class="text-xs font-black text-slate-400 uppercase tracking-widest"></div>
                     </div>
                     <!-- Task 4 & 10: Schedule List with Status -->
                     <div id="med-schedule" class="space-y-4"></div>
@@ -72,31 +72,36 @@ async function renderPatientContainer(container) {
 
             </div>
 
-            <!-- Task 9: Weekly Progress Section -->
-            <!-- Task 9: Weekly Progress Section (Reduced Noise) -->
+            <!-- Gamified Progress Section -->
             <div class="col-span-12 lg:col-span-4 space-y-6">
-                <div class="card-white p-6">
+                <div class="card-white p-6 border-b-4">
                     <div class="flex items-center justify-between mb-4">
-                        <h4 class="text-base font-display font-bold text-slate-800 dark:text-slate-100">Today's Progress</h4>
-                        <span id="daily-progress-pct" class="text-sm font-bold text-emerald-500">0%</span>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="zap" class="text-warning w-6 h-6 streak-flame"></i>
+                            <h4 class="text-lg font-display font-black text-slate-700 dark:text-slate-200">XP Progress</h4>
+                        </div>
+                        <span id="daily-progress-pct" class="text-lg font-black text-warning">0%</span>
                     </div>
-                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6">
-                        <div id="daily-progress-bar" class="bg-emerald-500 h-full transition-all duration-1000" style="width: 0%"></div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-6 rounded-2xl overflow-hidden mb-6 border-2 border-slate-200 dark:border-slate-600 shadow-inner">
+                        <div id="daily-progress-bar" class="bg-warning h-full transition-all duration-1000 relative">
+                            <div class="absolute top-1 left-2 right-2 h-1.5 bg-white/30 rounded-full"></div>
+                        </div>
                     </div>
                     <div class="h-32">
                         <canvas id="weekly-progress-chart"></canvas>
                     </div>
                 </div>
 
-                <div class="card-white p-6">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-500">
-                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <div class="card-white p-6 border-b-4">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary border-b-4 border-secondary/20">
+                            <i data-lucide="bird" class="w-5 h-5"></i>
                         </div>
-                        <h4 class="text-base font-display font-bold text-slate-800 dark:text-slate-100">Insights</h4>
+                        <h4 class="text-lg font-display font-black text-slate-700 dark:text-slate-200">Coach Duo</h4>
                     </div>
-                    <div id="patient-insights" class="text-sm">
-                        <p class="text-slate-400 dark:text-slate-500 italic">Analyzing adherence...</p>
+                    <div id="patient-insights" class="text-sm font-bold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-600 relative">
+                        <div class="absolute -top-2 left-6 w-4 h-4 bg-slate-50 dark:bg-slate-700 border-l-2 border-t-2 border-slate-200 dark:border-slate-600 rotate-45"></div>
+                        <p class="italic text-slate-400">Thinking...</p>
                     </div>
                 </div>
             </div>
@@ -150,17 +155,24 @@ async function renderPatientView() {
             if (medsWithStatus.length === 0) {
                 // Edge Case: If no upcoming dose (no meds today) -> show "No upcoming doses today"
                 heroEl.innerHTML = `
-                    <div class="bg-slate-100 rounded-[2.5rem] p-10 text-slate-500 dark:text-slate-400 dark:text-slate-500 relative overflow-hidden shadow-sm dark:shadow-none text-center">
-                        <h3 class="text-3xl font-display font-bold">No upcoming doses today</h3>
-                        <p class="mt-2 opacity-90">You have no medications scheduled for today.</p>
+                    <div class="bg-slate-100 rounded-[2.5rem] p-10 text-slate-500 dark:bg-slate-800 dark:text-slate-400 relative overflow-hidden text-center border-b-4 border-slate-200 dark:border-slate-700">
+                        <div class="w-20 h-20 bg-white dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border-b-4 border-slate-200 dark:border-slate-600">
+                            <i data-lucide="moon" class="w-10 h-10 text-slate-400"></i>
+                        </div>
+                        <h3 class="text-3xl font-display font-black text-slate-700 dark:text-slate-200">Rest Easy!</h3>
+                        <p class="mt-2 text-lg font-bold">You have no medications scheduled for today.</p>
+                        <a href="/medicines.html" class="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold uppercase tracking-wider border-b-4 border-primary-dark active:border-b-0 active:translate-y-1 transition-all">Add Medicine</a>
                     </div>
                 `;
             } else if (pendingMeds.length === 0) {
                 // Edge Case: If all taken -> keep existing "All caught up"
                 heroEl.innerHTML = `
-                    <div class="bg-emerald-500 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-sm dark:shadow-none text-center">
-                        <h3 class="text-3xl font-display font-bold">All caught up!</h3>
-                        <p class="mt-2 opacity-90">You've taken all your scheduled medications for today.</p>
+                    <div class="bg-primary rounded-[2.5rem] p-10 text-white relative overflow-hidden text-center border-b-4 border-primary-dark">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border-b-4 border-white/30">
+                            <i data-lucide="award" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <h3 class="text-3xl font-display font-black">All caught up! +50 XP</h3>
+                        <p class="mt-2 text-lg font-bold opacity-90">You've completed your daily quest!</p>
                     </div>
                 `;
             } else {
@@ -170,52 +182,50 @@ async function renderPatientView() {
                 if (!isFuture) {
                     // Due now or overdue - show the standard "Take Now" blue banner
                     heroEl.innerHTML = `
-                        <div class="bg-emerald-500 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-sm dark:shadow-none group">
+                        <div class="bg-primary rounded-[2.5rem] p-10 text-white relative overflow-hidden border-b-4 border-primary-dark group">
                             <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                 <div class="flex items-center gap-6">
-                                    <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0">
-                                        <i data-lucide="pill" class="w-8 h-8"></i>
+                                    <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shrink-0 border-b-4 border-white/30">
+                                        <i data-lucide="pill" class="w-10 h-10"></i>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold uppercase tracking-widest opacity-80 mb-1">Take Now</p>
-                                        <h3 class="text-3xl font-display font-bold">${nextMed.name}</h3>
-                                        <p class="text-base mt-1 opacity-90 font-medium">${nextMed.time} • ${nextMed.dosage || '1 Tablet'}</p>
+                                        <p class="text-sm font-black uppercase tracking-widest opacity-80 mb-1">Take Now</p>
+                                        <h3 class="text-4xl font-display font-black">${nextMed.name}</h3>
+                                        <p class="text-lg mt-1 opacity-90 font-bold">${nextMed.time} • ${nextMed.dosage || '1 Tablet'}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-3 w-full md:w-auto">
-                                    <button onclick="logMed('${nextMed._id}', 'taken')" class="flex-1 md:flex-none px-8 py-4 bg-white text-emerald-600 font-bold rounded-2xl shadow-sm dark:shadow-none hover:shadow-md dark:shadow-none active:scale-95 transition-all flex items-center justify-center gap-2">
+                                    <button onclick="logMed('${nextMed._id}', 'taken')" class="flex-1 md:flex-none px-8 py-4 bg-white text-primary font-black uppercase tracking-wider rounded-xl hover:bg-slate-50 transition-all border-b-4 border-slate-200 active:border-b-0 active:translate-y-1 flex items-center justify-center gap-2">
                                         <i data-lucide="check" class="w-5 h-5"></i> Take Now
                                     </button>
-                                    <button onclick="alert('Snoozed for 10 minutes');" class="px-6 py-4 bg-white/20 text-white font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-700/30 transition-all flex items-center justify-center gap-2">
-                                        <i data-lucide="moon" class="w-5 h-5"></i> Snooze
+                                    <button onclick="alert('Snoozed for 10 minutes');" class="px-6 py-4 bg-primary-dark text-white font-black uppercase tracking-wider rounded-xl transition-all border-b-4 border-[#337800] active:border-b-0 active:translate-y-1 flex items-center justify-center gap-2">
+                                        <i data-lucide="moon" class="w-5 h-5"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
                         </div>
                     `;
                 } else {
                     // Future dose - show "All caught up" AND countdown below it
                     heroEl.innerHTML = `
-                        <div class="bg-emerald-500 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-sm dark:shadow-none text-center mb-6">
-                            <h3 class="text-3xl font-display font-bold">All caught up for now!</h3>
-                            <p class="mt-2 opacity-90">You've taken your scheduled medications so far. Next dose is coming up.</p>
+                        <div class="bg-primary rounded-[2.5rem] p-8 text-white relative overflow-hidden border-b-4 border-primary-dark text-center mb-6">
+                            <h3 class="text-2xl font-display font-black">All caught up for now! +10 XP</h3>
+                            <p class="mt-1 opacity-90 font-bold">You've completed your current quests.</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 dark:border-slate-700 rounded-[2rem] p-6 shadow-sm dark:shadow-none border border-transparent dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-6 animate-slide-up relative overflow-hidden">
-                            <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500"></div>
-                            <div class="flex items-center gap-5 pl-4">
-                                <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center shrink-0">
-                                    <i data-lucide="clock" class="w-7 h-7"></i>
+                        <div class="bg-white dark:bg-slate-800 dark:border-slate-700 rounded-[2rem] p-6 border-2 border-slate-200 border-b-4 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                            <div class="flex items-center gap-5 pl-2">
+                                <div class="w-16 h-16 bg-secondary text-white rounded-full flex items-center justify-center shrink-0 border-b-4 border-secondary-dark">
+                                    <i data-lucide="clock" class="w-8 h-8"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-0.5">Next Upcoming Dose</p>
-                                    <p class="text-xl font-display font-bold text-slate-800 dark:text-slate-100">${nextMed.name} <span class="text-slate-400 dark:text-slate-500 text-sm font-sans font-medium ml-1">at ${nextMed.time}</span></p>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-0.5">${nextMed.dosage || '1 Tablet'}</p>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Next Quest</p>
+                                    <p class="text-2xl font-display font-black text-slate-700 dark:text-slate-200">${nextMed.name} <span class="text-slate-400 text-sm font-sans font-bold ml-1">at ${nextMed.time}</span></p>
+                                    <p class="text-sm font-bold text-slate-500 mt-0.5">${nextMed.dosage || '1 Tablet'}</p>
                                 </div>
                             </div>
-                            <div class="px-8 py-5 bg-emerald-50/50 rounded-2xl border border-emerald-100 shrink-0 w-full sm:w-auto text-center">
-                                <p id="countdown-timer" class="text-2xl font-display font-bold text-emerald-600 tracking-wide font-mono">--h --m --s</p>
-                                <p class="text-[10px] text-emerald-500/70 font-bold uppercase tracking-widest mt-1">Remaining</p>
+                            <div class="px-8 py-5 bg-slate-50 rounded-2xl border-2 border-slate-200 shrink-0 w-full sm:w-auto text-center dark:bg-slate-700 dark:border-slate-600">
+                                <p id="countdown-timer" class="text-2xl font-display font-black text-secondary tracking-wide font-mono">--h --m --s</p>
+                                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Remaining</p>
                             </div>
                         </div>
                     `;
@@ -264,44 +274,51 @@ async function renderPatientView() {
             if (medsWithStatus.length === 0) {
                 scheduleEl.innerHTML = `
                     <div class="card-white flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
-                        <i data-lucide="calendar-x-2" class="w-16 h-16 mb-4 opacity-10"></i>
-                        <p class="font-display font-bold text-lg">No medications scheduled today</p>
+                        <i data-lucide="calendar-x-2" class="w-16 h-16 mb-4 opacity-20"></i>
+                        <p class="font-display font-black text-lg">No quests available today</p>
                     </div>
                 `;
             } else {
                 scheduleEl.innerHTML = medsWithStatus.map(m => {
-                    let statusColor = 'bg-amber-100 text-amber-600';
+                    let statusColor = 'bg-warning text-white border-warning-dark';
                     let statusLabel = 'Pending';
-                    if (m.status === 'taken') { statusColor = 'bg-emerald-100 text-emerald-600'; statusLabel = 'Taken'; }
-                    else if (m.status === 'skipped') { statusColor = 'bg-rose-100 text-rose-600'; statusLabel = 'Missed'; }
+                    let iconBg = 'bg-slate-100 text-slate-400 border-slate-200';
+                    
+                    if (m.status === 'taken') { 
+                        statusColor = 'bg-primary text-white border-primary-dark'; 
+                        statusLabel = 'Completed'; 
+                        iconBg = 'bg-primary text-white border-primary-dark';
+                    }
+                    else if (m.status === 'skipped') { 
+                        statusColor = 'bg-danger text-white border-danger-dark'; 
+                        statusLabel = 'Missed'; 
+                        iconBg = 'bg-danger text-white border-danger-dark';
+                    }
 
                     return `
-                        <div class="card-white group hover:border-primary/30 transition-all">
-                            <div class="flex items-center justify-between">
+                        <div class="card-white group hover:border-secondary transition-all">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <div class="flex items-center gap-6">
-                                    <div class="w-14 h-14 bg-slate-50 dark:bg-slate-900/50 rounded-2xl flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:bg-primary dark:hover:bg-sky-500 dark:bg-sky-600/5 group-hover:text-white transition-all relative z-10">
-                                        <i data-lucide="clock" class="w-6 h-6"></i>
+                                    <div class="w-16 h-16 rounded-full flex items-center justify-center ${iconBg} border-b-4 transition-all relative z-10 shadow-sm">
+                                        <i data-lucide="pill" class="w-8 h-8"></i>
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-3">
-                                            <h4 class="text-lg font-display font-bold text-slate-800 dark:text-slate-100">${m.name}</h4>
-                                            <span class="px-2 py-0.5 ${statusColor} text-[10px] font-bold uppercase rounded-md flex items-center gap-1">
-                                                <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
+                                            <h4 class="text-xl font-display font-black text-slate-700 dark:text-slate-200">${m.name}</h4>
+                                            <span class="px-3 py-1 ${statusColor} text-[10px] font-black uppercase tracking-wider rounded-lg border-b-2 flex items-center gap-1 shadow-sm">
                                                 ${statusLabel}
                                             </span>
                                         </div>
-                                        <p class="text-sm text-slate-400 dark:text-slate-500 font-medium">${m.time} • ${m.dosage || '1 Tablet'}</p>
+                                        <p class="text-sm text-slate-400 dark:text-slate-500 font-bold mt-1">${m.time} • ${m.dosage || '1 Tablet'}</p>
                                     </div>
                                 </div>
-                                <div class="flex gap-2">
+                                <div class="flex gap-2 w-full sm:w-auto">
                                     ${m.status === 'pending' ? `
-                                        <button onclick="logMed('${m._id}', 'taken')" class="p-3 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-500 hover:text-white transition-all"><i data-lucide="check"></i></button>
-                                        <button onclick="logMed('${m._id}', 'skipped')" class="p-3 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-500 hover:text-white transition-all"><i data-lucide="x"></i></button>
-                                        <button onclick="alert('Reminder set for 15 mins')" class="p-3 bg-slate-50 dark:bg-slate-900/50 text-slate-400 dark:text-slate-500 rounded-xl hover:bg-slate-200 transition-all"><i data-lucide="bell-ring"></i></button>
+                                        <button onclick="logMed('${m._id}', 'taken')" class="flex-1 sm:flex-none px-4 py-3 bg-primary text-white rounded-xl border-b-4 border-primary-dark hover:brightness-110 transition-all active:border-b-0 active:translate-y-1"><i data-lucide="check" class="mx-auto"></i></button>
+                                        <button onclick="logMed('${m._id}', 'skipped')" class="flex-1 sm:flex-none px-4 py-3 bg-danger text-white rounded-xl border-b-4 border-danger-dark hover:brightness-110 transition-all active:border-b-0 active:translate-y-1"><i data-lucide="x" class="mx-auto"></i></button>
+                                        <button onclick="alert('Reminder set for 15 mins')" class="flex-1 sm:flex-none px-4 py-3 bg-slate-100 text-slate-500 rounded-xl border-b-4 border-slate-200 hover:bg-slate-200 transition-all active:border-b-0 active:translate-y-1 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300"><i data-lucide="bell-ring" class="mx-auto"></i></button>
                                     ` : `
-                                        <div class="w-10 h-10 flex items-center justify-center rounded-full ${m.status === 'taken' ? 'bg-emerald-50 text-emerald-500' : 'bg-rose-50 text-rose-500'}">
-                                            <i data-lucide="${m.status === 'taken' ? 'check' : 'alert-circle'}" class="w-5 h-5"></i>
-                                        </div>
+                                        <button onclick="logMed('${m._id}', 'pending')" class="px-6 py-3 bg-slate-100 text-slate-500 rounded-xl border-b-4 border-slate-200 font-bold uppercase text-xs tracking-wider hover:bg-slate-200 transition-all active:border-b-0 active:translate-y-1 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300">Undo</button>
                                     `}
                                 </div>
                             </div>
@@ -323,29 +340,24 @@ async function renderPatientView() {
         if (pctEl) pctEl.textContent = `${pct}%`;
         if (barEl) barEl.style.width = `${pct}%`;
 
-        // Insights
+        // Insights / Coach Duo
         const insightsEl = document.getElementById('patient-insights');
         if (insightsEl) {
             if (pct === 100) {
                 insightsEl.innerHTML = `
-                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex gap-4 animate-fade-in">
-                        <i data-lucide="award" class="text-emerald-500 w-5 h-5 shrink-0"></i>
-                        <p class="text-xs text-emerald-700 font-medium">Perfect adherence today! Keep up the great work.</p>
-                    </div>
+                    <p>Perfect score! You've completed all quests today! Your health stats are maxed out! 🎉</p>
                 `;
             } else if (todayLogs.find(l => l.status === 'skipped')) {
                 insightsEl.innerHTML = `
-                    <div class="p-4 bg-rose-50 rounded-2xl border border-rose-100 flex gap-4 animate-fade-in">
-                        <i data-lucide="alert-triangle" class="text-rose-500 w-5 h-5 shrink-0"></i>
-                        <p class="text-xs text-rose-700 font-medium">You missed a dose today. Consistency is key for your health.</p>
-                    </div>
+                    <p class="text-danger">Oh no, you missed a quest! Don't lose your streak, stay consistent!</p>
+                `;
+            } else if (pct > 0) {
+                insightsEl.innerHTML = `
+                    <p>You're on fire! 🔥 Keep taking those meds to reach 100% XP for today.</p>
                 `;
             } else {
                 insightsEl.innerHTML = `
-                    <div class="p-4 bg-primary dark:bg-sky-600/5 rounded-2xl border border-primary/10 flex gap-4 animate-fade-in">
-                        <i data-lucide="info" class="text-primary w-5 h-5 shrink-0"></i>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">Remember to take your medications on time to maintain steady levels.</p>
-                    </div>
+                    <p>Ready to start your daily health quests? I'm rooting for you!</p>
                 `;
             }
         }

@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - MedRemind Lumina</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Varela+Round&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="/css/style.css">
     <script>
@@ -16,15 +14,15 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { primary: '#0ea5e9', secondary: '#10b981', danger: '#ef4444' },
-                    fontFamily: { display: ['Outfit', 'sans-serif'] }
+                    colors: { primary: '#58cc02', 'primary-dark': '#46a302', secondary: '#1cb0f6', danger: '#ff4b4b', warning: '#ffc800' },
+                    fontFamily: { display: ['Varela Round', 'sans-serif'], sans: ['Nunito', 'sans-serif'] }
                 }
             }
         }
     </script>
 </head>
 
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 font-sans">
     <div id="profile-app" class="animate-slide-up">
         <header class="mb-10">
             <h2 class="text-3xl font-display font-bold text-slate-800 dark:text-slate-100">Account Settings</h2>

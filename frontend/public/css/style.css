@@ -1,43 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Varela+Round&display=swap');
 
 :root {
-    --primary: #0ea5e9;
-    --primary-dark: #0284c7;
-    --secondary: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --bg-main: #f8fafc;
+    --primary: #58cc02;
+    --primary-dark: #46a302;
+    --secondary: #1cb0f6;
+    --secondary-dark: #1899d6;
+    --danger: #ff4b4b;
+    --danger-dark: #ea2b2b;
+    --warning: #ffc800;
+    --warning-dark: #e5b400;
+    --bg-main: #ffffff;
     --bg-sidebar: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --radius-xl: 1.5rem;
-    --radius-2xl: 2rem;
-    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
-    --shadow-heavy: 0 10px 30px -5px rgba(14, 165, 233, 0.15);
+    --text-main: #3c3c3c;
+    --text-muted: #afafaf;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
     --card-bg: #ffffff;
-    --card-border: transparent;
+    --card-border: #e5e5e5;
 }
 
 .dark {
-    --bg-main: #0f172a;
-    --bg-sidebar: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --card-bg: #1e293b;
-    --card-border: #334155;
-    --shadow-soft: none;
-    --shadow-heavy: none;
+    --bg-main: #131f24;
+    --bg-sidebar: #131f24;
+    --text-main: #ffffff;
+    --text-muted: #77858a;
+    --card-bg: #131f24;
+    --card-border: #37464f;
+    --primary: #58cc02;
+    --primary-dark: #46a302;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito', sans-serif;
     background-color: var(--bg-main);
     color: var(--text-main);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    font-weight: 700;
 }
 
-.font-display { font-family: 'Outfit', sans-serif; }
+.font-display { font-family: 'Varela Round', 'Nunito', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
 
 /* Layout Shell */
 .app-container {
@@ -48,7 +50,7 @@ body {
 .sidebar {
     width: 280px;
     background: var(--bg-sidebar);
-    border-right: 1px solid var(--card-border);
+    border-right: 2px solid var(--card-border);
     padding: 2.5rem 1.5rem;
     display: flex;
     flex-direction: column;
@@ -71,50 +73,28 @@ body {
     gap: 1rem;
     padding: 0.875rem 1.25rem;
     color: var(--text-muted);
-    font-weight: 500;
+    font-weight: 800;
     border-radius: 1rem;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
 }
 
 .nav-link:hover {
-    background: #f1f5f9;
-    color: var(--primary);
+    background: #f7f7f7;
+    border: 2px solid var(--card-border);
+    color: var(--text-main);
 }
+.dark .nav-link:hover { background: #202f36; }
 
 .nav-link.active {
-    background: #f0f9ff;
-    color: var(--primary);
-    position: relative;
+    background: #ddf4ff;
+    color: var(--secondary);
+    border: 2px solid #84d8ff;
 }
-
-.nav-link.active::before {
-    content: '';
-    position: absolute;
-    left: -1.5rem;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: var(--primary);
-    border-radius: 0 4px 4px 0;
-}
-
-.emergency-btn {
-    background: var(--danger);
-    color: white;
-    padding: 1.25rem;
-    border-radius: 1.5rem;
-    font-weight: 700;
-    text-align: center;
-    box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.3);
-    margin-top: auto;
-    transition: transform 0.2s;
-    border: none;
-    cursor: pointer;
-}
-
-.emergency-btn:hover {
-    transform: scale(1.02);
-}
+.dark .nav-link.active { background: #1a2f3a; border-color: #1a2f3a; }
 
 /* Mobile Bottom Nav */
 .mobile-nav {
@@ -124,12 +104,11 @@ body {
     left: 0;
     right: 0;
     background: var(--bg-sidebar);
-    border-top: 1px solid var(--card-border);
+    border-top: 2px solid var(--card-border);
     padding: 0.75rem 1rem;
     justify-content: space-around;
     align-items: center;
     z-index: 100;
-    box-shadow: 0 -4px 20px -5px rgba(0,0,0,0.05);
 }
 
 .mobile-nav-link {
@@ -139,122 +118,103 @@ body {
     gap: 0.25rem;
     color: var(--text-muted);
     font-size: 0.625rem;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .mobile-nav-link.active {
-    color: var(--primary);
+    color: var(--secondary);
 }
 
-/* Glass & Cards */
-.card-glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: var(--radius-2xl);
-    padding: 2.5rem; /* Task 36: Standard Padding */
-    box-shadow: var(--shadow-soft);
-}
-
+/* Duolingo Cards */
 .card-white {
     background: var(--card-bg);
-    border: 1px solid var(--card-border);
+    border: 2px solid var(--card-border);
+    border-bottom: 4px solid var(--card-border);
     border-radius: var(--radius-xl);
     padding: 2rem;
-    box-shadow: var(--shadow-soft);
-    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s;
     text-align: left;
+    transition: transform 0.1s;
 }
 
-.card-white:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 30px -5px rgba(0,0,0,0.06);
-}
-
-/* Task 39: Standard Buttons */
-.btn-primary {
-    background: var(--primary);
-    color: white;
-    padding: 1rem 2rem;
+/* Duolingo Buttons */
+button, .btn-primary {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     border-radius: 1rem;
-    font-weight: 700;
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+    transition: all 0.1s;
 }
 
-.btn-primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-heavy);
+/* Base style for anything that looks like a primary button */
+.bg-primary { 
+    background-color: var(--primary) !important; 
+    border-color: var(--primary-dark) !important;
 }
 
-.btn-secondary {
-    background: var(--card-border);
-    color: var(--text-main);
-    padding: 1rem 2rem;
-    border-radius: 1rem;
-    font-weight: 700;
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
+.text-primary { color: var(--primary) !important; }
+
+/* Apply 3D effect to all buttons that have background colors */
+button[class*="bg-"] {
+    border-bottom-width: 4px;
 }
 
-/* Task 37: Spacing System */
-.gap-sm { gap: 0.5rem; }
-.gap-md { gap: 1.5rem; }
-.gap-lg { gap: 2.5rem; }
-
-.mb-sm { margin-bottom: 0.5rem; }
-.mb-md { margin-bottom: 1.5rem; }
-.mb-lg { margin-bottom: 2.5rem; }
-
-/* Med Cards */
-.med-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+button[class*="bg-"]:active {
+    transform: translateY(4px);
+    border-bottom-width: 0px;
+    margin-bottom: 4px;
 }
 
-.med-card.active { border-left: 6px solid var(--primary); }
-.med-card.warning { border-left: 6px solid var(--warning); }
-.med-card.success { border-left: 6px solid var(--secondary); }
+/* Fix specific button overrides */
+.bg-emerald-500 { background-color: var(--primary) !important; border-color: var(--primary-dark) !important; }
+.text-emerald-500 { color: var(--primary) !important; }
+.bg-emerald-50 { background-color: #e5f9d6 !important; }
+.text-emerald-600 { color: var(--primary-dark) !important; }
+.bg-emerald-100 { background-color: #d7ffb8 !important; }
 
-/* Utility Classes */
-.bg-primary { background-color: var(--primary); }
-.text-primary { color: var(--primary); }
-.bg-danger { background-color: var(--danger); }
-.text-danger { color: var(--danger); }
-.bg-secondary { background-color: var(--secondary); }
+.bg-rose-500 { background-color: var(--danger) !important; border-color: var(--danger-dark) !important; }
+.text-rose-500 { color: var(--danger) !important; }
+.bg-rose-50 { background-color: #ffdfe0 !important; }
+.text-rose-600 { color: var(--danger-dark) !important; }
+.bg-rose-100 { background-color: #ffc4c6 !important; }
+
+.bg-amber-500 { background-color: var(--warning) !important; border-color: var(--warning-dark) !important; }
+.text-amber-500 { color: var(--warning) !important; }
+.bg-amber-50 { background-color: #fff4ce !important; }
+
+.bg-sky-500, .bg-sky-600 { background-color: var(--secondary) !important; border-color: var(--secondary-dark) !important; }
+
+/* Rounded inputs */
+input, select {
+    border: 2px solid var(--card-border) !important;
+    background: #f7f7f7 !important;
+    border-radius: 1rem !important;
+    font-weight: 700 !important;
+    font-family: 'Nunito', sans-serif;
+}
+input:focus, select:focus {
+    border-color: var(--secondary) !important;
+    background: #ffffff !important;
+}
+.dark input, .dark select { background: #202f36 !important; border-color: #37464f !important; }
 
 /* Animations */
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .animate-slide-up {
-    animation: slideUp 0.5s ease-out forwards;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-.animate-fade-in {
-    animation: fadeIn 0.4s ease-out forwards;
+/* Gamified Elements */
+.streak-flame {
+    color: var(--warning);
+    filter: drop-shadow(0 0 8px rgba(255, 200, 0, 0.6));
 }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 
 @media (max-width: 1024px) {
     .sidebar { display: none; }
