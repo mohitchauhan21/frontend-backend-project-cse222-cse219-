@@ -6,9 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     initDashboard();
-    if (Notification.permission !== 'granted') {
-        Notification.requestPermission();
-    }
 });
 
 window.initDashboard = async function initDashboard() {
