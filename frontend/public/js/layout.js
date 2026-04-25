@@ -149,6 +149,6 @@ const renderSidebar = () => {
 };
 
 // Auto-render if not on index or register
-if (!window.location.pathname.includes('index') && !window.location.pathname.includes('register') && window.location.pathname !== '/' && window.location.pathname.endsWith('.html')) {
+if (!window.location.pathname.includes('index') && !window.location.pathname.includes('register') && window.location.pathname !== '/') {
     document.addEventListener('DOMContentLoaded', renderSidebar);
 }
