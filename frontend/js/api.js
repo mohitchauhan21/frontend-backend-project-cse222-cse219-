@@ -1,7 +1,7 @@
 // Switch between development and production backend URLs
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000/api'
-    : 'https://medremind-backend.onrender.com/api';
+    : 'https://medremind-qh76.onrender.com/api';
 
 const apiFetch = async (endpoint, options = {}) => {
     const token = localStorage.getItem('token');
