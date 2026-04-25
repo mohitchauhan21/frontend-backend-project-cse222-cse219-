@@ -17,11 +17,12 @@ if (loginForm) {
         
         const email = document.getElementById('login-email')?.value;
         const password = document.getElementById('login-password')?.value;
+        const role = document.getElementById('login-role')?.value;
 
         try {
             const res = await apiFetch('/auth/login', {
                 method: 'POST',
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password, role })
             });
             console.log('Login response:', res);
 
