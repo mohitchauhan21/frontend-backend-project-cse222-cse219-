@@ -1050,14 +1050,51 @@ window.addNewPrescription = async function () {
     });
 }
 
+function playDingSound() {
+    try {
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, context.currentTime); // A5
+        oscillator.frequency.setValueAtTime(1108.73, context.currentTime + 0.1); // C#6
+        
+        gainNode.gain.setValueAtTime(1, context.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.4);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        
+        oscillator.start();
+        oscillator.stop(context.currentTime + 0.4);
+    } catch (e) {
+        console.log("Audio failed to play", e);
+    }
+}
+
 window.logMed = async function (medId, status) {
-    // Visually disable the card buttons while saving
+    if (status === 'taken') {
+        playDingSound();
+        if (window.confetti) {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#58cc02', '#1cb0f6', '#ffc800', '#ff4b4b'],
+                gravity: 1.2
+            });
+        }
+    } else if (status === 'skipped') {
+        // Haptic feedback if supported
+        if (navigator.vibrate) navigator.vibrate(200);
+    }
+
     try {
         await apiFetch('/logs', {
             method: 'POST',
             body: JSON.stringify({ medicineId: medId, status })
         });
-        // Refresh only the schedule section, not the entire page
         await renderPatientView();
     } catch (err) {
         const msg = err.message || '';
