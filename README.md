@@ -156,6 +156,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 - **Critical Alerts** — Flags patients with adherence <60%, 3+ missed doses in 3 days, or 2+ days inactive
 - **Patient Clinical File** — Modal with avg adherence, heart rate, blood pressure, active prescriptions, recent logs
 - **New Prescription & Doctor Notes** — Doctor can prescribe medicines directly to any patient from a modal and attach private-write/public-read clinical notes
+- **Set Patient Diagnosis** — Doctors can officially update a patient's diagnosis record while prescribing medication, which reflects immediately on the patient's profile.
 - **Adjust Prescription** — Accessible from the patient file modal
 
 ### 👨‍👩‍👧 Caregiver Features
@@ -165,6 +166,7 @@ The project follows a clean **Controller-Route** pattern on the backend and a st
 
 ### 🛡️ Admin Features
 - **Doctor Management (CRUD)** — Add, edit, and remove clinical staff securely.
+- **Restricted Registration** — Admin accounts cannot be created via the public registration form to maintain system security.
 - **Clinical Records Oversight** — Click into any doctor's profile to view their total managed patients and a detailed patient directory.
 - **Dual-Role Capabilities** — Admins have full access to patient features, allowing them to manage their own health metrics while governing the system.
 
