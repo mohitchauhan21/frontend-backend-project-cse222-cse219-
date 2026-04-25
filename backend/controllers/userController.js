@@ -36,20 +36,28 @@ exports.getMyPatients = async (req, res) => {
 // @access   Private (Caregiver only)
 exports.linkPatient = async (req, res) => {
     try {
-        const { email } = req.body;
-        const caregiver = await User.findById(req.user.id);
-        if (caregiver.role !== 'caregiver') return res.status(403).json({ msg: 'Access denied' });
+        const { email, diagnosis } = req.body;
+        const user = await User.findById(req.user.id);
+        if (user.role !== 'caregiver' && user.role !== 'doctor') return res.status(403).json({ msg: 'Access denied' });
 
         const patient = await User.findOne({ email, role: 'patient' });
         if (!patient) return res.status(404).json({ msg: 'Patient not found' });
 
-        if (caregiver.patientIds.includes(patient._id)) {
-            return res.status(400).json({ msg: 'Patient already linked' });
+        // Update diagnosis if provided
+        if (diagnosis) {
+            patient.diagnosis = diagnosis.trim();
+            await patient.save();
         }
 
-        caregiver.patientIds.push(patient._id);
-        await caregiver.save();
-        res.json(caregiver.patientIds);
+        // Link logic for caregivers
+        if (user.role === 'caregiver') {
+            if (!user.patientIds.includes(patient._id)) {
+                user.patientIds.push(patient._id);
+                await user.save();
+            }
+        }
+        
+        res.json({ msg: 'Patient linked successfully', patient });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
@@ -61,10 +69,11 @@ exports.linkPatient = async (req, res) => {
 // @access   Private
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, age } = req.body;
+        const { name, age, specialty } = req.body;
         const updateFields = {};
         if (name) updateFields.name = name.trim();
         if (age) updateFields.age = parseInt(age);
+        if (specialty) updateFields.specialty = specialty.trim();
 
         const user = await User.findByIdAndUpdate(
             req.user.id,

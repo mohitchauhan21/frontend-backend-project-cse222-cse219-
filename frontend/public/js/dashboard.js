@@ -628,6 +628,7 @@ window.linkPatient = function() {
     document.getElementById('link-patient-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('link-patient-email').value.trim();
+        const diagnosis = document.getElementById('link-patient-diagnosis').value.trim();
         if (!email) return;
 
         const btn = e.target.querySelector('button[type="submit"]');
@@ -637,7 +638,7 @@ window.linkPatient = function() {
         try {
             await apiFetch('/users/link-patient', {
                 method: 'POST',
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ email, diagnosis })
             });
             modal.remove();
             // Show success toast

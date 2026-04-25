@@ -93,6 +93,14 @@
                             <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Member
                                 Since</label>
                             <p id="detail-joined" class="text-slate-800 dark:text-slate-100 font-medium">Jan 12, 2023</p>
+                        
+                        <div class="space-y-1" id="specialty-container" style="display: none;">
+                            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Specialty</label>
+                            <p id="detail-specialty" class="text-slate-800 dark:text-slate-100 font-medium">--</p>
+                        </div>
+                        <div class="space-y-1" id="diagnosis-container" style="display: none;">
+                            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Diagnosis</label>
+                            <p id="detail-diagnosis" class="text-slate-800 dark:text-slate-100 font-medium">--</p>
                         </div>
                     </div>
                 </div>
@@ -128,6 +136,12 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase mb-2 ml-1">Age</label>
                             <input type="number" id="edit-age"
+                                class="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-transparent dark:border-slate-700 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all">
+                        </div>
+
+                        <div id="edit-specialty-container" style="display: none;" class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase mb-2 ml-1">Specialty</label>
+                            <input type="text" id="edit-specialty"
                                 class="w-full px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-transparent dark:border-slate-700 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all">
                         </div>
                         <div class="md:col-span-2">
@@ -168,6 +182,15 @@
                 document.getElementById('detail-email').textContent = user.email;
                 document.getElementById('detail-age').textContent = `${user.age || '--'} Years`;
                 document.getElementById('display-role').textContent = user.role;
+                if (user.role === 'doctor') {
+                    document.getElementById('specialty-container').style.display = 'block';
+                    document.getElementById('detail-specialty').textContent = user.specialty || 'General Practitioner';
+                    document.getElementById('edit-specialty-container').style.display = 'block';
+                }
+                if (user.role === 'patient') {
+                    document.getElementById('diagnosis-container').style.display = 'block';
+                    document.getElementById('detail-diagnosis').textContent = user.diagnosis || 'No current diagnosis recorded';
+                }
                 document.getElementById('profile-avatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
 
                 const roleInfo = document.getElementById('role-info');
@@ -233,6 +256,7 @@
                     document.getElementById('edit-details-form')?.classList.remove('hidden');
                     document.getElementById('edit-name').value = user.name || '';
                     document.getElementById('edit-age').value = user.age || '';
+                    if (user.role === 'doctor') { document.getElementById('edit-specialty').value = user.specialty || ''; }
                 });
 
                 document.getElementById('cancel-edit-btn')?.addEventListener('click', () => {
@@ -247,12 +271,13 @@
                     btn.textContent = 'Saving...';
                     const name = document.getElementById('edit-name').value.trim();
                     const age = document.getElementById('edit-age').value;
+                    const specialty = document.getElementById('edit-specialty')?.value?.trim();
                     try {
                         await apiFetch('/users/profile', {
                             method: 'PUT',
-                            body: JSON.stringify({ name, age })
+                            body: JSON.stringify({ name, age, specialty })
                         });
-                        const updatedUser = { ...user, name, age };
+                        const updatedUser = { ...user, name, age, specialty };
                         localStorage.setItem('user', JSON.stringify(updatedUser));
                         alert('Profile updated successfully!');
                         window.location.reload();
