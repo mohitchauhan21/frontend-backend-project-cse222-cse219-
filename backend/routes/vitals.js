@@ -6,6 +6,6 @@ const { protect, authorizeRoles } = require('../middleware/auth');
 router.get('/', protect, getMyVitals);
 router.post('/', protect, addVitals);
 router.get('/stats/:userId', protect, getPatientVitals);
-router.post('/update', protect, authorizeRoles('caregiver'), updateVitals);
+router.post('/update', protect, authorizeRoles('caregiver', 'doctor'), updateVitals);
 
 module.exports = router;

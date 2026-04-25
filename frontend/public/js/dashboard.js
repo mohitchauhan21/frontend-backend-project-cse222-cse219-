@@ -743,6 +743,7 @@ async function renderDoctorView(container) {
                         <th class="px-8 py-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">Adherence</th>
                         <th class="px-8 py-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Last Missed</th>
                         <th class="px-8 py-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Risk Level</th>
+                        <th class="px-8 py-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">Vitals (HR/BP)</th>
                         <th class="px-8 py-4 text-right"></th>
                     </tr>
                 </thead>
@@ -756,12 +757,14 @@ async function renderDoctorView(container) {
         document.getElementById('doc-patient-count').textContent = patients.length;
 
         const patientData = await Promise.all(patients.map(async p => {
-            const [stats, logs] = await Promise.all([
+            const [stats, logs, vitalsData] = await Promise.all([
                 apiFetch(`/logs/stats/${p._id}`),
-                apiFetch(`/logs/patient/${p._id}`)
+                apiFetch(`/logs/patient/${p._id}`),
+                apiFetch(`/vitals/stats/${p._id}`).catch(() => [])
             ]);
             const avg = stats.length > 0 ? Math.round(stats.reduce((acc, s) => acc + s.percentage, 0) / stats.length) : 0;
             const lastMissed = logs.find(l => l.status === 'skipped');
+            const vitals = vitalsData && vitalsData.length > 0 ? vitalsData[0] : null;
 
             // Task 18: Risk Level Logic
             let risk = 'Low';
@@ -769,7 +772,7 @@ async function renderDoctorView(container) {
             if (avg < 50) { risk = 'High'; riskColor = 'text-rose-500 bg-rose-50'; }
             else if (avg < 80) { risk = 'Medium'; riskColor = 'text-amber-500 bg-amber-50'; }
 
-            return { ...p, adherence: avg, lastMissed, risk, riskColor, logs };
+            return { ...p, adherence: avg, lastMissed, risk, riskColor, logs, vitals };
         }));
 
         const overallAvg = Math.round(patientData.reduce((acc, p) => acc + p.adherence, 0) / (patientData.length || 1));
@@ -808,6 +811,17 @@ async function renderDoctorView(container) {
                 </td>
                 <td class="px-8 py-6">
                     <span class="px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest ${p.riskColor} ring-1 ring-inset ${p.risk === 'High' ? 'ring-rose-200' : p.risk === 'Medium' ? 'ring-amber-200' : 'ring-emerald-200'}">${p.risk}</span>
+                </td>
+                <td class="px-8 py-6">
+                    <div class="flex items-center justify-center gap-1" onclick="event.stopPropagation()">
+                        <input type="number" id="hr-${p._id}" placeholder="${p.vitals?.heartRate || 'HR'}" class="w-12 text-xs font-bold p-1.5 rounded border border-slate-200 dark:bg-slate-800 dark:border-slate-700 outline-none focus:border-primary text-center">
+                        <input type="number" id="sys-${p._id}" placeholder="${p.vitals?.bloodPressure?.systolic || 'Sys'}" class="w-12 text-xs font-bold p-1.5 rounded border border-slate-200 dark:bg-slate-800 dark:border-slate-700 outline-none focus:border-primary text-center">
+                        <span class="text-slate-400">/</span>
+                        <input type="number" id="dia-${p._id}" placeholder="${p.vitals?.bloodPressure?.diastolic || 'Dia'}" class="w-12 text-xs font-bold p-1.5 rounded border border-slate-200 dark:bg-slate-800 dark:border-slate-700 outline-none focus:border-primary text-center">
+                        <button onclick="updatePatientVitals('${p._id}')" class="p-1.5 ml-1 bg-primary text-white rounded hover:bg-primary-dark transition-all">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
                 </td>
                 <td class="px-8 py-6 text-right">
                     <div class="flex items-center justify-end gap-2">
