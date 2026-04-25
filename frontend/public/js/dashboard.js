@@ -145,7 +145,40 @@ async function renderPatientView() {
 
         // Task 8: Render Hero Section
         const pendingMeds = medsWithStatus.filter(m => m.status === 'pending');
-        const heroEl = document.getElementById('next-dose-hero');
+        
+    try {
+        const alerts = await apiFetch('/users/alerts');
+        let alertsContainer = document.getElementById('patient-alerts-container');
+        if (!alertsContainer) {
+            const heroParent = document.getElementById('next-dose-hero')?.parentElement;
+            if (heroParent) {
+                alertsContainer = document.createElement('div');
+                alertsContainer.id = 'patient-alerts-container';
+                heroParent.insertBefore(alertsContainer, document.getElementById('next-dose-hero'));
+            }
+        }
+        if (alertsContainer) {
+            if (alerts && alerts.length > 0) {
+                alertsContainer.innerHTML = alerts.map(a => `
+                    <div id="alert-${a._id}" class="mb-4 bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-xl flex items-center justify-between shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-rose-100 rounded-lg text-rose-600"><i data-lucide="bell-ring" class="w-5 h-5"></i></div>
+                            <div>
+                                <p class="text-rose-800 font-bold text-sm">${a.message}</p>
+                                <p class="text-rose-500 text-xs mt-0.5">${new Date(a.date).toLocaleString([], {dateStyle: 'short', timeStyle: 'short'})}</p>
+                            </div>
+                        </div>
+                        <button onclick="dismissAlert('${a._id}')" class="text-rose-400 hover:text-rose-600 p-2"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
+                `).join('');
+            } else {
+                alertsContainer.innerHTML = '';
+            }
+            lucide.createIcons();
+        }
+    } catch(e) { console.error('Failed to fetch alerts', e); }
+
+    const heroEl = document.getElementById('next-dose-hero');
         
         if (window.countdownInterval) {
             clearInterval(window.countdownInterval);
@@ -558,9 +591,7 @@ async function renderCaregiverView(container) {
 
                     <div class="flex gap-2">
                         <button onclick="viewPatientFile('${p._id}', '${p.name}')" class="flex-1 py-3 bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2 text-sm"><i data-lucide="folder-open" class="w-4 h-4"></i> View File</button>
-                        <a href="tel:1234567890" class="w-12 h-12 flex items-center justify-center bg-slate-50 dark:bg-slate-900/50 text-slate-400 dark:text-slate-500 rounded-xl hover:bg-emerald-50 hover:text-emerald-500 transition-all"><i data-lucide="phone"></i></a>
-                        <a href="mailto:${p.email}" class="w-12 h-12 flex items-center justify-center bg-slate-50 dark:bg-slate-900/50 text-slate-400 dark:text-slate-500 rounded-xl hover:bg-sky-50 hover:text-sky-500 transition-all"><i data-lucide="message-square"></i></a>
-                        <button onclick="alert('Reminder sent to ${p.name}')" class="w-12 h-12 flex items-center justify-center bg-amber-50 text-amber-500 rounded-xl hover:bg-amber-500 hover:text-white transition-all"><i data-lucide="zap"></i></button>
+                        <button onclick="sendPatientAlert('${p._id}', '${p.name}')" class="w-12 h-12 flex items-center justify-center bg-amber-50 text-amber-500 rounded-xl hover:bg-amber-500 hover:text-white transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)]"><i data-lucide="zap"></i></button>
                     </div>
                 </div>
             `).join('');
@@ -1200,4 +1231,26 @@ window.updatePatientVitals = async function(userId) {
     } catch (err) {
         alert('Failed to update vitals: ' + (err.message || 'Server error'));
     }
+};
+
+
+window.sendPatientAlert = async function(patientId, patientName) {
+    try {
+        await apiFetch('/users/alert', {
+            method: 'POST',
+            body: JSON.stringify({ patientId })
+        });
+        alert('Alert sent to ' + patientName + ' successfully!');
+    } catch(e) {
+        alert('Failed to send alert.');
+        console.error(e);
+    }
+};
+
+window.dismissAlert = async function(id) {
+    try {
+        await apiFetch(`/users/alerts/${id}/dismiss`, { method: 'PUT' });
+        const el = document.getElementById(`alert-${id}`);
+        if (el) el.remove();
+    } catch(e) { console.error('Failed to dismiss alert', e); }
 };
