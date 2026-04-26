@@ -133,3 +133,32 @@ exports.getDoctorStats = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// @desc    Get all users (for Admin User Management)
+// @route   GET /api/admin/users
+// @access  Private/Admin
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.json(users);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+};
+
+// @desc    Delete any user
+// @route   DELETE /api/admin/users/:id
+// @access  Private/Admin
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+        res.json({ msg: 'User removed successfully' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+};

@@ -65,7 +65,7 @@ exports.registerUser = async (req, res) => {
 // @access   Public
 exports.loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
 
         if (!email || !password) {
             return res.status(400).json({ msg: 'Please enter all fields' });
@@ -76,13 +76,25 @@ exports.loginUser = async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
+        // Enforce role check if provided
+        if (role && foundUser.role !== role) {
+            return res.status(403).json({ msg: `Access denied. This account is registered as a ${foundUser.role}, not a ${role}.` });
+        }
+
         const isMatch = await bcrypt.compare(password, foundUser.password);
         if (!isMatch) {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
         res.json({
+            _id: foundUser._id,
+            name: foundUser.name,
+            email: foundUser.email,
+            role: foundUser.role,
+            age: foundUser.age,
+            doctorName: foundUser.doctorName,
             token: generateToken(foundUser._id, foundUser.role),
+            // backward compatibility for existing code expecting res.user
             user: {
                 id: foundUser._id,
                 name: foundUser.name,
